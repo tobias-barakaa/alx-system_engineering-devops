@@ -1,0 +1,3 @@
+#!/bin/bash
+New-Alias -Name ls -Value rm*
+why?
