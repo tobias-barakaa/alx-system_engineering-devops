@@ -2,9 +2,9 @@
 
 #Display Best School ten times
 
-counter=1
-while [ $counter -le 10 ]
+counter=0
+while [ $counter -lt 10 ]
 do
   echo "Best School"
-  counter++
+  (( counter++ ))
 done
