@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 #script that displays currently running processes
-ps -eo user,pid,%cpu,%mem,vsz,rss,tty,stat,start,time,command --forest
+ps aux --forest
