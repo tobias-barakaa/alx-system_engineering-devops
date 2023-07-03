@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # Script that stops the 4-to_infinity_and_beyond process
 process_id=$(pgrep -f "4-to_infinity_and_beyond")
-#if the process is running
 if [ -n "$pid" ]; then
-    # If the process is running, send a termination signal (SIGTERM) to the process
     kill "$process_id"
     echo "Process terminated"
 fi
