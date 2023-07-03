@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 # Script that stops the 4-to_infinity_and_beyond process
-process_id=$(pgrep -f "4-to_infinity_and_beyond")
-if [ -n "$pid" ]; then
-    kill "$process_id"
-    echo "Process terminated"
-fi
+# shellcheck disable=SC2009
+
+kill -SIGTERM "$(pgrep -f "4-to_infinity_and_beyond")"
