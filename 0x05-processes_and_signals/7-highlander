@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#script that desplays
+trap "echo 'I am invincible!!!'; exit" SIGTERM
+while true; do
+    echo "To infinity and beyond"
+    sleep 2
+done
