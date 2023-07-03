@@ -3,4 +3,4 @@
 # shellcheck disable=SC2009
 
 # Script that displays lines containing the word "bash" and gets the PID of your Bash process
-ps -ef | grep bash
+ps -ef | grep bash | grep -v "grep bash" | grep -v "$$"
