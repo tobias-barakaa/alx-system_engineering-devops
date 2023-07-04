@@ -1,16 +1,9 @@
 #!/usr/bin/env ruby
 
-pattern = /School/
-
 if ARGV.length != 1
-  puts "Usage: ./0-simply_match_school.rb <string>"
+  puts "Usage: ./scan_school.rb <string>"
   exit
 end
 
-string = ARGV[0]
-
-if string =~ pattern
-  puts "School"
-else
-  puts ""
-end
+matches = ARGV[0].scan(/hbt{2,5}n/)
+puts matches.join
