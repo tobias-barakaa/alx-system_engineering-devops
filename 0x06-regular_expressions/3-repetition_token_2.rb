@@ -5,5 +5,5 @@ if ARGV.length != 1
   exit
 end
 
-matches = ARGV[0].scan(/hbt*n/)
+matches = ARGV[0].scan(/hbt+n/)
 puts matches.join
