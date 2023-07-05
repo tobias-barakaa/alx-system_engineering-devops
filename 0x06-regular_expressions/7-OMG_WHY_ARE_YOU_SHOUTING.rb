@@ -5,5 +5,5 @@ if ARGV.length != 1
   exit
 end
 
-matches = ARGV[0].scan(/[A^Z]/)
+matches = ARGV[0].scan(/[A-Z]/)
 puts matches.join
