@@ -5,5 +5,5 @@ if ARGV.length != 1
   exit
 end
 
-matches = ARGV[0].scan(/h[^o]*n/)
+matches = ARGV[0].scan(/^h.n$/)
 puts matches.join
