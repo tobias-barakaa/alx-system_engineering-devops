@@ -5,5 +5,5 @@ if ARGV.length != 1
   exit
 end
 
-matches = ARGV[0].scan(/^\d{3}-\d{3}-\d{4}( x \d{1,6})?$/)
+matches = ARGV[0].scan(/^\d{10}$/)
 puts matches.join
