@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# script to display listening ports and associated programs
+netstat -tulnep
