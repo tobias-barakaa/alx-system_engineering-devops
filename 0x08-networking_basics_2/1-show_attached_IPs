@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#Bash script that displays all active IPv4 IPs on the machine
+ipv4_addresses=$(ifconfig | grep -oP 'inet \K[\d.]+')
+echo "$ipv4_addresses"
