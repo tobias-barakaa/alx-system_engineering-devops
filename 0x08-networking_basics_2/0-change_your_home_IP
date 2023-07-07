@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Backup the original hosts file
-sudo cp /etc/hosts /etc/hosts.bak
-sudo sed -i 's/127.0.0.1 localhost/127.0.0.2 localhost/' /etc/hosts
-sudo sed -i 's/facebook.com/8.8.8.8 facebook.com/' /etc/hosts
-sudo service systemd-resolved restart
-
-echo "Configuration updated successfully."
+#Bash script localhost resolves to 127.0.0.2
+sudo cp /etc/hosts /etc/hosts.backup
+sudo sed -i 's/127.0.0.1/127.0.0.2/' /etc/hosts
+sudo sed -i 's/facebook.com/8.8.8.8/' /etc/hosts
+sudo systemd-resolve --flush-caches
+cat /etc/hosts
+sudo systemctl restart systemd-resolved
