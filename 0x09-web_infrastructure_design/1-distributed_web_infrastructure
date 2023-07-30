@@ -1,0 +1,69 @@
+Design of Three-Server Web Infrastructure:
+
+User Scenario: A user wants to access the website hosted at www.foobar.com.
+
+Server 1:
+
+First server hosts the web server (Nginx), application server, and application files (code base).
+This server will handle user requests and execute the application logic.
+Server 2:
+
+Second server serves as a database server running MySQL.
+It stores and manages website data.
+Server 3:
+
+Third server is a load balancer (HAproxy).
+It distributes incoming user requests across the two application servers to ensure better performance and availability.
+Web Server (Nginx) and Application Server:
+
+Nginx serves as the web server, handling incoming HTTP requests from users' web browsers.
+The application server processes dynamic content requests from Nginx, executes the code base, and generates dynamic content (HTML pages).
+Application Files (Code Base):
+
+The code base consists of the website's source code and assets required for its operation.
+It resides on the first server and is executed by the application server.
+Database (MySQL):
+
+MySQL runs on the second server and stores website data such as user accounts, articles, and settings.
+Load Balancer (HAproxy):
+
+HAproxy is the load balancer that sits on the third server.
+It distributes incoming user requests across the two application servers to ensure even load distribution and prevent overloading a single server.
+Specifics about the Infrastructure:
+
+For every additional element, why you are adding it:
+
+We add two more servers to distribute the workload and separate concerns. The first server handles web and application logic, the second server is dedicated to the database, and the third server is the load balancer.
+What distribution algorithm your load balancer is configured with and how it works:
+
+HAproxy uses a Round Robin distribution algorithm by default.
+The Round Robin algorithm cycles through the available application servers and directs each new request to the next server in line.
+Is your load-balancer enabling an Active-Active or Active-Passive setup, explain the difference between both:
+
+The setup with the HAproxy load balancer enables an Active-Active configuration.
+In an Active-Active setup, all servers are actively serving user requests simultaneously, distributing the load between them.
+In an Active-Passive setup, only one server is actively serving requests, and the others are on standby, ready to take over if the active server fails.
+How a database Primary-Replica (Master-Slave) cluster works:
+
+In a Primary-Replica cluster, the primary node (master) is the main database server that handles both read and write operations.
+The replica node(s) (slave) are backup database servers that replicate data from the primary node and are used for read-only operations or as failover in case the primary node becomes unavailable.
+What is the difference between the Primary node and the Replica node in regard to the application:
+
+The primary node (master) is responsible for handling write operations, such as adding or modifying data in the database.
+The replica node(s) (slave) are used for read-only operations, such as fetching data to display on the website.
+The application interacts primarily with the primary node for read and write operations, while the replica nodes are used to offload read queries and provide redundancy.
+Issues with this Infrastructure:
+
+Single Point of Failure (SPOF):
+
+The HAproxy load balancer represents a single point of failure. If it fails, the website's availability is compromised.
+To address this, a secondary load balancer or redundant setup is required.
+Security Issues (No Firewall, No HTTPS):
+
+The infrastructure lacks a firewall to protect against unauthorized access and cyberattacks.
+Additionally, there is no HTTPS configuration, leaving user data and communications susceptible to interception.
+To improve security, a firewall should be implemented, and HTTPS should be used to encrypt data transmitted between users and the website.
+No Monitoring:
+
+The infrastructure lacks a monitoring system to track server performance, detect anomalies, and respond to issues proactively.
+Implementing a monitoring solution will help ensure better performance, availability, and overall system health.
