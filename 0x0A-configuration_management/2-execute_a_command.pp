@@ -1,7 +1,7 @@
-#  a manifest that kills a process named killmenow
+# 2-execute_a_command.pp
+
 exec { 'killmenow':
   command     => 'pkill -f killmenow',
-  path        => '/alx-system_engineering-devops/0x0A-configuration_management/2-execute_a_command.pp',
+  path        => ['/bin', '/usr/bin'],
   refreshonly => true,
 }
-
