@@ -1,0 +1,5 @@
+# Use the private key ~/.ssh/school for authentication.
+IdentityFile ~/.ssh/school
+
+# Disable password-based authentication.
+PasswordAuthentication no
