@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Update the package list and install nginx
+#
+
 function install_and_configure_nginx() {
     # Update the package list and install nginx
     sudo apt-get update
