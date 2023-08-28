@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
-# Update the package list and install nginx
-#
+# Install and configure nginx
+# to return 'Hello World!' on a GET request
+# to /
 
-function install_and_configure_nginx() {
-    # Update the package list and install nginx
+function install_and_configure_nginx(){
     sudo apt-get update
     sudo apt-get -y install nginx
+    echo 'Hello World!' > /var/www/html/index.html
+    service nginx start
 
-    # Create a basic HTML file with "Hello World!"
-    echo "Hello World!" > /var/www/html/index.html
-
-    # Start Nginx service
-    sudo service nginx start
 }
-
-# Call the function to install and configure nginx
-install_and_configure_nginx
+install_and_configure_nginx;
