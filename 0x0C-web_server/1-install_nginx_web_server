@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 # Update the package list and install nginx
-apt-get update
-apt-get install -y nginx
+function install_and_configure_nginx() {
+    # Update the package list and install nginx
+    sudo apt-get update
+    sudo apt-get -y install nginx
 
-# Create a simple HTML page
-cat << EOF > /var/www/html/index.html
-<!DOCTYPE html>
-<html>
-<head>
-<title>Hello World!</title>
-</head>
-<body>
-<h1>Hello World!</h1>
-</body>
-</html>
-EOF
+    # Create a basic HTML file with "Hello World!"
+    echo "Hello World!" > /var/www/html/index.html
 
-# Make sure nginx is listening on port 80
-sudo service nginx restart
+    # Start Nginx service
+    sudo service nginx start
+}
+
+# Call the function to install and configure nginx
+install_and_configure_nginx
