@@ -1,15 +1,30 @@
 #!/usr/bin/env bash
-# Update package index and install nginx with -y flag for automatic "Yes" responses
-sudo apt-get update
-sudo apt-get install -y nginx
 
-# Configure nginx to listen on port 80
-sudo sed -i 's/^\(listen .*\)80/\1 8080/' /etc/nginx/sites-available/default
+# Update package list and install Nginx
+apt-get update -y
+apt-get install nginx -y
 
-# Restart nginx
-sudo service nginx restart
+# Create a custom HTML page with "Hello World!"
+echo "Hello World!" > /var/www/html/index.html
 
-# Create a simple HTML page with "Hello World!"
-echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+# Replace the default Nginx configuration with a custom one
+cat > /etc/nginx/sites-available/default <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html;
+    server_name _;
 
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+EOF
+
+# Restart Nginx
+service nginx restart
+
+# Exit with success
 exit 0
+
