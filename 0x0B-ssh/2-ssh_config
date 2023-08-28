@@ -1,5 +1,9 @@
-# Use the private key ~/.ssh/school for authentication.
-IdentityFile ~/.ssh/school
+# SSH client configuration file
+# The SSH client will only use Key Authentication
+# Password based Authentication is disabled 
 
-# Disable password-based authentication.
-PasswordAuthentication no
+Host *
+    HostName 54.210.171.16
+    SeverAliveInterval 120
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
