@@ -1,20 +1,37 @@
 # Define the Nginx class
-package { 'nginx':
-  ensure => installed,
+class nginx {
+  package { 'nginx':
+    ensure => installed,
+  }
+
+  service { 'nginx':
+    ensure => running,
+    enable => true,
+  }
+
+  # Create a default configuration file for Nginx
+  file { '/etc/nginx/sites-available/default':
+    ensure => file,
+    content => template('nginx/default.conf.erb'),
+  }
+
+  # Create a symbolic link for the default configuration file
+  file { '/etc/nginx/sites-enabled/default':
+    ensure => link,
+    target => '/etc/nginx/sites-available/default',
+  }
 }
 
-file_line { 'install':
-  ensure => 'present',
-  path   => '/etc/nginx/sites-enabled/default',
-  after  => 'listen 80 default_server;',
-  line   => 'rewrite ^/redirect_me https://www.github.com/besthor permanent;',
+# Define the redirection rule
+class redirection {
+  httpd::location { '/redirect_me':
+    ensure => present,
+    redirect => '301 https://www.github.com/besthor permanent;',
+  }
 }
 
-file { '/var/www/html/index.html':
-  content => 'Hello World!',
-}
-
-service { 'nginx':
-  ensure  => running,
-  require => Package['nginx'],
+# Require the Nginx and redirection classes
+class main {
+  require => Class['nginx'],
+  require => Class['redirection'],
 }
