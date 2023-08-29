@@ -1,36 +1,9 @@
 #!/usr/bin/env bash
-
-# Install Nginx if not already installed
-sudo apt-get update
-sudo apt-get install -y nginx
-
-# Configure Nginx to perform 301 redirection
-sudo unlink /etc/nginx/sites-enabled/default
-sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    root /var/www/html;
-    index index.html;
-
-    server_name _;
-
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-}
-EOF
-
-# Create a symbolic link to enable the default site
-sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-
-# Restart Nginx
-sudo service nginx restart
-
-# Exit the script
-exit 0
+# Bash script containing commands to automatically configure a Ubuntu machine to
+# configure a Nginx server so that /redirect_me is redirecting to another page
+sudo apt-get -y update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html
+sudo sed -i "/listen \[\:\:\]\:80 default_server;/a rewrite ^/redirect_me https://www.youtube.com permanent;" /etc/nginx/sites-available/default
+sudo service nginx start
