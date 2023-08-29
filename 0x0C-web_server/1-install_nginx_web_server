@@ -1,13 +1,35 @@
-#!/usr/bin/env bash
-# Install and configure nginx
-# to return 'Hello World!' on a GET request
-# to /
+#!/bin/bash
 
-function install_and_configure_nginx(){
-    sudo apt-get update
-    sudo apt-get -y install nginx
-    echo 'Hello World!' > /var/www/html/index.html
-    service nginx start
+# Update package list and install Nginx
+sudo apt-get update
+sudo apt-get install -y nginx
 
+# Create a basic HTML file with "Hello World!" content
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Configure Nginx to listen on port 80 and serve the custom HTML file
+sudo unlink /etc/nginx/sites-enabled/default
+sudo tee /etc/nginx/sites-available/default > /dev/null <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
 }
-install_and_configure_nginx;
+EOF
+
+# Create a symbolic link to enable the default site
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# Restart Nginx
+sudo /etc/init.d/nginx restart
+
+# Exit the script
+exit 0
