@@ -45,4 +45,3 @@ class redirect {
 
 # Apply the Redirect class
 include redirect
-
