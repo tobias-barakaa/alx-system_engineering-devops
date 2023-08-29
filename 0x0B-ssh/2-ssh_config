@@ -1,9 +1,11 @@
 # SSH client configuration file
 # The SSH client will only use Key Authentication
-# Password based Authentication is disabled 
+# Password-based Authentication is disabled
 
-Host *
-    HostName 54.210.171.16
-    SeverAliveInterval 120
+Host your-server-alias  # Replace with a suitable alias for your server
+    HostName 18.204.6.124  # Replace with your server's IP or hostname
+    User ubuntu  # Replace with your server's username
     IdentityFile ~/.ssh/school
     PasswordAuthentication no
+    ServerAliveInterval 120
+
