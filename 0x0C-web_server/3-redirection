@@ -1,9 +1,44 @@
 #!/usr/bin/env bash
-# Bash script containing commands to automatically configure a Ubuntu machine to
-# configure a Nginx server so that /redirect_me is redirecting to another page
+# Bash script to configure Nginx for /redirect_me redirection
+
+# Update package list and install Nginx
 sudo apt-get -y update
 sudo apt-get -y install nginx
+
+# Allow HTTP traffic through UFW
 sudo ufw allow 'Nginx HTTP'
-echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html
-sudo sed -i "/listen \[\:\:\]\:80 default_server;/a rewrite ^/redirect_me https://www.youtube.com permanent;" /etc/nginx/sites-available/default
-sudo service nginx start
+
+# Create a custom HTML page for redirection
+echo "<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv='refresh' content='0;url=https://www.youtube.com/watch?v=QH2-TGUlwu4'>
+</head>
+<body></body>
+</html>" | sudo tee /var/www/html/redirect_me.html
+
+# Configure Nginx to redirect /redirect_me
+sudo bash -c "cat <<EOL > /etc/nginx/sites-available/redirect_me
+server {
+    listen [::]:80 default_server;
+    listen 80 default_server;
+    root /var/www/html;
+    index index.html;
+    server_name _;
+    location /redirect_me {
+        rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
+    }
+}
+EOL"
+
+# Create a symbolic link to enable the site configuration
+sudo ln -s /etc/nginx/sites-available/redirect_me /etc/nginx/sites-enabled/
+
+# Remove the default Nginx configuration
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Test the Nginx configuration
+sudo nginx -t
+
+# Restart Nginx to apply the changes
+sudo service nginx restart
