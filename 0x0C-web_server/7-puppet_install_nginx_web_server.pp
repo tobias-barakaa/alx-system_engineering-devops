@@ -1,37 +1,44 @@
-# Define the Nginx class
-class nginx {
-  package { 'nginx':
-    ensure => installed,
-  }
-
-  service { 'nginx':
-    ensure => running,
-    enable => true,
-  }
-
-  # Create a default configuration file for Nginx
-  file { '/etc/nginx/sites-available/default':
-    ensure => file,
-    content => template('nginx/default.conf.erb'),
-  }
-
-  # Create a symbolic link for the default configuration file
-  file { '/etc/nginx/sites-enabled/default':
-    ensure => link,
-    target => '/etc/nginx/sites-available/default',
-  }
+# Install Nginx package
+package { 'nginx':
+  ensure => installed,
 }
 
-# Define the redirection rule
-class redirection {
-  httpd::location { '/redirect_me':
-    ensure => present,
-    redirect => '301 https://www.github.com/besthor permanent;',
-  }
+# Configure redirection and server block
+file { '/etc/nginx/sites-available/redirect_me':
+  ensure  => 'file',
+  content => "
+    server {
+      listen 80 default_server;
+      server_name _;
+
+      location /redirect_me {
+        return 301 https://www.github.com/besthor permanent;
+      }
+
+      location / {
+        root   /var/www/html;
+        index  index.html;
+      }
+    }
+  ",
 }
 
-# Require the Nginx and redirection classes
-class main {
-  require => Class['nginx'],
-  require => Class['redirection'],
+# Enable the redirection site
+file { '/etc/nginx/sites-enabled/redirect_me':
+  ensure => 'link',
+  target => '/etc/nginx/sites-available/redirect_me',
+  require => File['/etc/nginx/sites-available/redirect_me'],
+}
+
+# Create the index.html file
+file { '/var/www/html/index.html':
+  ensure  => 'file',
+  content => 'Hello World!',
+}
+
+# Ensure Nginx service is running and enabled
+service { 'nginx':
+  ensure  => running,
+  enable  => true,
+  require => Package['nginx'],
 }
