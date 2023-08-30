@@ -1,44 +1,25 @@
-# Install Nginx package
+# Puppet Manifest for Automating Project Requirements
+
+# Install the Nginx package
 package { 'nginx':
-  ensure => installed,
+  ensure => installed,  # Ensure that the 'nginx' package is installed
 }
 
-# Configure redirection and server block
-file { '/etc/nginx/sites-available/redirect_me':
-  ensure  => 'file',
-  content => "
-    server {
-      listen 80 default_server;
-      server_name _;
-
-      location /redirect_me {
-        return 301 https://www.github.com/besthor permanent;
-      }
-
-      location / {
-        root   /var/www/html;
-        index  index.html;
-      }
-    }
-  ",
+# Configure redirection in the default Nginx server block
+file_line { 'configure_redirection':
+  ensure => 'present',                            # Ensure the specified line is present in the file
+  path   => '/etc/nginx/sites-enabled/default',   # Path to the Nginx server block configuration
+  after  => 'listen 80 default_server;',         # Insert the line after the 'listen 80 default_server;' line
+  line   => 'rewrite ^/redirect_me https://www.github.com/besthor permanent;',  # Define the redirection rule
 }
 
-# Enable the redirection site
-file { '/etc/nginx/sites-enabled/redirect_me':
-  ensure => 'link',
-  target => '/etc/nginx/sites-available/redirect_me',
-  require => File['/etc/nginx/sites-available/redirect_me'],
-}
-
-# Create the index.html file
+# Create the 'Hello World!' index.html file
 file { '/var/www/html/index.html':
-  ensure  => 'file',
-  content => 'Hello World!',
+  content => 'Hello World!',  # Set the content of the index.html file to 'Hello World!'
 }
 
-# Ensure Nginx service is running and enabled
+# Ensure the Nginx service is running and enabled
 service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => Package['nginx'],
+  ensure  => running,          # Ensure the 'nginx' service is running
+  require => Package['nginx'], # Require the 'nginx' package to be installed before starting the service
 }
