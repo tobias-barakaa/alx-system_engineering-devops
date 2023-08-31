@@ -4,16 +4,9 @@
 # Import necessary modules
 import subprocess
 
-# Define the server name
-server_name = "localhost"
+# Configure Apache server
+with open('/etc/apache2.conf', 'a') as apache_conf:
+    apache_conf.write("ServerName localhost\n")
 
-# Append the ServerName directive to the Apache configuration file
-with open('/etc/apache2/apache2.conf', 'a') as apache_conf:
-    apache_conf.write(f"ServerName {server_name}\n")
-
-# Start the Apache service
-try:
-    subprocess.run(['service', 'apache2', 'start'], check=True)
-    print("Apache server started successfully.")
-except subprocess.CalledProcessError as e:
-    print(f"Error starting Apache server: {e}")
+# Start Apache service
+subprocess.run(['service', 'apache2', 'start'])
