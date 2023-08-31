@@ -1,5 +1,19 @@
-#!/usr/bin/env bash
-# run apache on designated container
+#!/usr/bin/env python3
+# This script configures and starts the Apache server in a Docker container
 
-echo "ServerName localhost" >> /etc/apache2.conf
-service apache2 start
+# Import necessary modules
+import subprocess
+
+# Define the server name
+server_name = "localhost"
+
+# Append the ServerName directive to the Apache configuration file
+with open('/etc/apache2/apache2.conf', 'a') as apache_conf:
+    apache_conf.write(f"ServerName {server_name}\n")
+
+# Start the Apache service
+try:
+    subprocess.run(['service', 'apache2', 'start'], check=True)
+    print("Apache server started successfully.")
+except subprocess.CalledProcessError as e:
+    print(f"Error starting Apache server: {e}")
