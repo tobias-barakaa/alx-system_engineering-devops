@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
+
 # Install Nginx if not already installed
-if ! dpkg -l | grep -q nginx; then
-    sudo apt-get update
-    sudo apt-get install -y nginx
-fi
+sudo apt-get update
+sudo apt-get install -y nginx
 
-# Define the custom header
-custom_header="add_header X-Served-By \$hostname;"
+# Configure custom Nginx response header
+echo 'server {
+    listen 80 default_server;
+    server_name _;
+    add_header X-Served-By $HOSTNAME;
+    location / {
+        proxy_pass http://localhost:80;
+    }
+}' | sudo tee /etc/nginx/sites-available/default > /dev/null
 
-# Configure Nginx to add the custom header
-echo "Configuring Nginx..."
-echo "$custom_header" | sudo tee /etc/nginx/conf.d/01-custom-header.conf
+# Reload Nginx to apply the changes
+sudo service nginx reload
 
-# Restart Nginx to apply the changes
-sudo systemctl restart nginx
-
-# Ignore shellcheck SC2154 warning for $hostname
+# Ignore ShellCheck SC2154 warning
 # shellcheck disable=SC2154
