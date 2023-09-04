@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Set the desired hostname (replace [STUDENT_ID]-web-01 with the actual hostname)
+HOSTNAME="[STUDENT_ID]-web-01"
+
+# Check if Nginx is installed
+if ! command -v nginx &> /dev/null; then
+    echo "Nginx is not installed. Please install Nginx first."
+    exit 1
+fi
+
+# Edit Nginx configuration to include custom header
+echo "Adding custom header to Nginx configuration..."
+echo 'add_header X-Served-By $hostname;' | sudo tee -a /etc/nginx/nginx.conf
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
+
+echo "Custom header X-Served-By has been added to Nginx configuration on $HOSTNAME."
