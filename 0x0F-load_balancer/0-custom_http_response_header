@@ -1,19 +1,38 @@
 #!/usr/bin/env bash
+# Installs Nginx with the following configurations:
+#+    Listens on port 80.
+#+    Returns a page containing "Holberton School" when queried
+#+     at the root with a curl GET request.
+#+    Configures /redirect_me as a "301 Moved Permanently".
+#+    Includes a custom 404 page containing "Ceci n'est pas une page".
+#+    Contains a custom HTTP header named X-Served-By.
+#+    The value of the HTTP header is the hostname of the running server.
 
-# Set the desired hostname (replace [STUDENT_ID]-web-01 with the actual hostname)
-HOSTNAME="[STUDENT_ID]-web-01"
+apt-get update
+apt-get install -y nginx
 
-# Check if Nginx is installed
-if ! command -v nginx &> /dev/null; then
-    echo "Nginx is not installed. Please install Nginx first."
-    exit 1
-fi
+mkdir -p /var/www/html
+touch /var/www/html/index.html
+echo "Holberton School" > /var/www/html/index.html
+touch /var/www/html/404.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-# Edit Nginx configuration to include custom header
-echo "Adding custom header to Nginx configuration..."
-echo 'add_header X-Served-By $hostname;' | sudo tee -a /etc/nginx/nginx.conf
+printf %s "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    add_header X-Served-By $HOSTNAME;
+    root   /var/www/html;
+    index  index.html index.htm;
 
-# Restart Nginx to apply changes
-sudo systemctl restart nginx
+    location /redirect_me {
+        return 301 http://cuberule.com/;
+    }
 
-echo "Custom header X-Served-By has been added to Nginx configuration on $HOSTNAME."
+    error_page 404 /404.html;
+    location /404 {
+      root /var/www/html;
+      internal;
+    }
+}" > /etc/nginx/sites-available/default
+
+service nginx restart
