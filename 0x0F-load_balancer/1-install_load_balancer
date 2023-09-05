@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
-def install_haproxy():
-  """Installs HAProxy on the system."""
 
-  if not is_installed('haproxy'):
-    apt_get_update()
-    apt_get_install('haproxy')
+# Install HAProxy
+apt-get update && apt-get install haproxy -y
 
-def configure_haproxy():
-  """Configures HAProxy."""
-
-  if not os.path.exists('/etc/haproxy/haproxy.cfg'):
-    with open('/etc/haproxy/haproxy.cfg', 'w') as f:
-      f.write("""
+# Create a configuration file for HAProxy
+cat <<EOF > /etc/haproxy/haproxy.cfg
 global
   daemon
   maxconn 256
@@ -22,26 +15,18 @@ defaults
   timeout client 50000ms
   timeout server 50000ms
 
-frontend achrafelkhnissi.tech
+frontend http
   bind *:80
   default_backend servers
 
 backend servers
   balance roundrobin
-  server 233018-web-01 54.196.40.132:80 check
-  server 233018-web-02 52.23.213.94:80 check
-""")
+  server 86762-web-01 100.25.196.36:80 check
+  server 86762-web-02 52.87.215.223:80 check
+EOF
 
-def enable_haproxy():
-  """Enables HAProxy to start at boot."""
+# Enable HAProxy to start at boot
+update-rc.d haproxy defaults
 
-  if not os.path.exists('/etc/default/haproxy'):
-    with open('/etc/default/haproxy', 'w') as f:
-      f.write('ENABLED=1')
-
-  service('haproxy', 'start')
-
-if __name__ == '__main__':
-  install_haproxy()
-  configure_haproxy()
-  enable_haproxy()
+# Start HAProxy
+service haproxy start
