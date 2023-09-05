@@ -1,39 +1,63 @@
 #!/usr/bin/env bash
+# A script that installs and configures HAProxy on your web servers.
+function update() {
+echo "Updating apt-get..."
+  apt-get -y update &> /dev/null
+  echo "apt-get has been updated."
+}
 
-# Update and upgrade system packages
-sudo apt update -y
-sudo apt upgrade -y
+function install() {
+  if ! command -v "$1" &> /dev/null; then
+    update
+    echo "Installing $1..."
+    apt-get -y install "$1" &> /dev/null
+    echo "$1 has been installed."
+  else
+    echo "$1 is already installed."
+  fi
+}
 
 # Install HAProxy
-sudo apt install haproxy -y
+install haproxy
+
+# Give the user ownership to HAProxy files
+if [[ ! -d /etc/haproxy ]]; then
+  mkdir -p /etc/haproxy
+fi
+chown -R "$USER":"$USER" /etc/haproxy
+chmod -R 755 /etc/haproxy
 
 # Configure HAProxy
-cat <<EOF | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
+if [[ ! -f /etc/haproxy/haproxy.cfg.bak ]]; then
+  cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+fi
+
+cat <<EOF > /etc/haproxy/haproxy.cfg
 global
-    daemon
-    maxconn 256
+  daemon
+  maxconn 256
 
 defaults
-    mode http
-    timeout connect 5000ms
-    timeout client 50000ms
-    timeout server 50000ms
+  mode http
+  timeout connect 5000ms
+  timeout client 50000ms
+  timeout server 50000ms
 
-frontend http-in
-    bind *:80
-    default_backend servers
+frontend achrafelkhnissi.tech
+  bind *:80
+  default_backend servers
 
 backend servers
-    balance roundrobin
-    server web-01 [STUDENT_ID]-web-01:80 check
-    server web-02 [STUDENT_ID]-web-02:80 check
+  balance roundrobin
+  server 233018-web-01 54.196.40.132:80 check
+  server 233018-web-02 52.23.213.94:80 check
 EOF
 
-# Test HAProxy configuration
-sudo haproxy -c -f /etc/haproxy/haproxy.cfg
-
-# Restart HAProxy
-sudo systemctl restart haproxy
-
-# Enable HAProxy to start on boot
-sudo systemctl enable haproxy
+# Enable HAProxy
+if [[ ! -f /etc/default/haproxy ]]; then
+  touch /etc/default/haproxy
+fi
+chown -R "$USER":"$USER" /etc/default/haproxy
+chmod -R 755 /etc/default/haproxy
+echo "ENABLED=1" >> /etc/default/haproxy
+service haproxy start
