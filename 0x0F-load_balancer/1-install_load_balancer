@@ -1,38 +1,17 @@
 #!/usr/bin/env bash
-# A script that installs and configures HAProxy on your web servers.
-function update() {
-echo "Updating apt-get..."
-  apt-get -y update &> /dev/null
-  echo "apt-get has been updated."
-}
+def install_haproxy():
+  """Installs HAProxy on the system."""
 
-function install() {
-  if ! command -v "$1" &> /dev/null; then
-    update
-    echo "Installing $1..."
-    apt-get -y install "$1" &> /dev/null
-    echo "$1 has been installed."
-  else
-    echo "$1 is already installed."
-  fi
-}
+  if not is_installed('haproxy'):
+    apt_get_update()
+    apt_get_install('haproxy')
 
-# Install HAProxy
-install haproxy
+def configure_haproxy():
+  """Configures HAProxy."""
 
-# Give the user ownership to HAProxy files
-if [[ ! -d /etc/haproxy ]]; then
-  mkdir -p /etc/haproxy
-fi
-chown -R "$USER":"$USER" /etc/haproxy
-chmod -R 755 /etc/haproxy
-
-# Configure HAProxy
-if [[ ! -f /etc/haproxy/haproxy.cfg.bak ]]; then
-  cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
-fi
-
-cat <<EOF > /etc/haproxy/haproxy.cfg
+  if not os.path.exists('/etc/haproxy/haproxy.cfg'):
+    with open('/etc/haproxy/haproxy.cfg', 'w') as f:
+      f.write("""
 global
   daemon
   maxconn 256
@@ -51,13 +30,18 @@ backend servers
   balance roundrobin
   server 233018-web-01 54.196.40.132:80 check
   server 233018-web-02 52.23.213.94:80 check
-EOF
+""")
 
-# Enable HAProxy
-if [[ ! -f /etc/default/haproxy ]]; then
-  touch /etc/default/haproxy
-fi
-chown -R "$USER":"$USER" /etc/default/haproxy
-chmod -R 755 /etc/default/haproxy
-echo "ENABLED=1" >> /etc/default/haproxy
-service haproxy start
+def enable_haproxy():
+  """Enables HAProxy to start at boot."""
+
+  if not os.path.exists('/etc/default/haproxy'):
+    with open('/etc/default/haproxy', 'w') as f:
+      f.write('ENABLED=1')
+
+  service('haproxy', 'start')
+
+if __name__ == '__main__':
+  install_haproxy()
+  configure_haproxy()
+  enable_haproxy()
