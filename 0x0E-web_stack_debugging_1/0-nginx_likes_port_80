@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
-# Check if Nginx is running
-if [ "$(systemctl status nginx)" != "Active: active (running)" ]; then
-  echo "Nginx is not running. Starting it..."
-  systemctl start nginx
+# Install Nginx if not already installed
+if ! command -v nginx &> /dev/null; then
+  apt-get update
+  apt-get install -y nginx
 fi
 
-# Get the current listen port
-current_listen_port=$(grep listen /etc/nginx/sites-enabled/default | awk '{print $2}')
+# Ensure Nginx is enabled and running
+service nginx start
 
-# If the current listen port is not 80, then change it
-if [ "$current_listen_port" != "80" ]; then
-  echo "Changing the listen port to 80..."
-  sed -i "s/$current_listen_port default_server;/80 default_server;/" /etc/nginx/sites-enabled/default
-  sed -i "s/\[::\]:$current_listen_port default_server ipv6only=on;/\[::\]:80 default_server;/" /etc/nginx/sites-enabled/default
-  sed -i "s/ ipv6only=on//" /etc/nginx/sites-available/default
-  systemctl reload nginx
+# Check if Nginx is listening on port 80
+if ! netstat -tuln | grep ':80 ' &> /dev/null; then
+  # Configure Nginx to listen on port 80 for all active IPv4 IPs
+  sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+  service nginx reload
 fi
+
+# Print a message indicating that Nginx is now listening on port 80
+echo "Nginx is now listening on port 80 for all active IPv4 IPs"
