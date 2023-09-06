@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
-# This script configures and starts the Apache server in a Docker container
+# Check if Nginx is running
+if [ "$(systemctl status nginx)" != "Active: active (running)" ]; then
+  echo "Nginx is not running. Starting it..."
+  systemctl start nginx
+fi
 
-echo "ServerName localhost" >> /etc/apache2.conf
-service apache2 start
+# Get the current listen port
+current_listen_port=$(grep listen /etc/nginx/sites-enabled/default | awk '{print $2}')
+
+# If the current listen port is not 80, then change it
+if [ "$current_listen_port" != "80" ]; then
+  echo "Changing the listen port to 80..."
+  sed -i "s/$current_listen_port default_server;/80 default_server;/" /etc/nginx/sites-enabled/default
+  sed -i "s/\[::\]:$current_listen_port default_server ipv6only=on;/\[::\]:80 default_server;/" /etc/nginx/sites-enabled/default
+  sed -i "s/ ipv6only=on//" /etc/nginx/sites-available/default
+  systemctl reload nginx
+fi
