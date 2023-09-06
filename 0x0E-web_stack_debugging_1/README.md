@@ -9,7 +9,7 @@ Error Logs: Nginx also keeps error logs, which contain information about server 
 2. <h2>Configuration Check:</h2>
 
 Use the nginx -t command to check the syntax of your Nginx configuration files. This ensures that your changes won't break the server when you reload or restart it.
-3.<h6> Debugging Configuration Issues:</h6>
+3.<h2> Debugging Configuration Issues:</h6>
 
 If Nginx doesn't start or behaves unexpectedly, review the error logs for configuration errors. Common issues include typos, missing semicolons, or incorrect paths in configuration files.
 Tools like nginx -T (to dump the parsed configuration) and nginx -V (to display compile-time configuration) can help diagnose configuration issues.
