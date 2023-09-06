@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Script that sets the port 80
-sed -i "s/listen 8080 default_server;/listen 80 default_server;/" /etc/nginx/sites-enabled/default
-sed -i "s/listen \[::\]:8080 default_server ipv6only=on;/listen \[::\]:80 default_server;/" /etc/nginx/sites-enabled/default
-sed -i "s/ ipv6only=on//" /etc/nginx/sites-available/default
+# fix Ubuntu container's to listen on port 80
+
+new="80 default_server"
+old="8080 default_server"
+sed -i "s/$old/$new/" /etc/nginx/sites-enabled/default
+
 service nginx restart
