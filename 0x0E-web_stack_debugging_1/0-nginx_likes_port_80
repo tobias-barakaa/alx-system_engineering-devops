@@ -12,7 +12,7 @@ service nginx start
 if ! netstat -tuln | grep ':80 ' &> /dev/null; then
   # Configure Nginx to listen on port 80 for all active IPv4 IPs
   sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
-  service nginx reload
+    service nginx reload
 fi
 
 # Print a message indicating that Nginx is now listening on port 80
