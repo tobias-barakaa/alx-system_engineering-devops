@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-
-apt-get update
-apt-get -y install nginx
-
-if ! service nginx status | grep -q "is running"; then
-  sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
-  service nginx reload
-fi
+# Bash script according to previous task
+sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
+service nginx restart
+kill -9 "$(cat /run/nginx.pid)"
