@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Start Nginx if it's not running
+sudo service nginx status || sudo service nginx start
+
+# Ensure Nginx is configured to listen on port 80
+if ! grep -q "listen 80" /etc/nginx/sites-available/default; then
+    sed -i 's/listen [0-9]\+ default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default
+    sudo service nginx restart
+fi
