@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
-# Install Nginx (if not already installed)
-apt-get update
-apt-get install -y nginx
+# This script configures and starts the Apache server in a Docker container
 
-# Configure Nginx to listen on port 80
-echo "server {
-    listen 80;
-    server_name _;
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
-    }
-}" > /etc/nginx/sites-available/default
-
-# Restart Nginx to apply the configuration changes
-systemctl restart nginx
+echo "ServerName localhost" >> /etc/apache2.conf
+service apache2 start
