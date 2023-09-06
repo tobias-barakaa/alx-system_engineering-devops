@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Start Nginx if it's not running
+service nginx status || service nginx start
+grep -q "listen 80" /etc/nginx/sites-available/default || sed -i 's/listen [0-9]\+ default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default && service nginx restart
