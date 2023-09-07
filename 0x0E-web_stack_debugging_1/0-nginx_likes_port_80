@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 # a script to check if nginx is configured succesfully
+# Remove the symbolic link to the default website configuration
+sudo rm /etc/nginx/sites-enabled/default
 
-sed -i 's/8080/80/g' /etc/nginx/sites-available/default
-service nginx restart
+# Create a new symbolic link to the default website configuration
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Restart the Nginx web server
+sudo service nginx restart
