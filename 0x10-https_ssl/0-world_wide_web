@@ -2,25 +2,25 @@
 
 # Check the number of command-line arguments
 if [ "$#" = 1 ]; then
-    # Define an array of subdomains to query
-    dom_sub=("www" "lb-01" "web-01" "web-02")
+    # Define an array of subdomains to query when only domain name is provided
+    subdomains=("www" "lb-01" "web-01" "web-02")
     
     # Loop through the subdomains
-    for sub_domain in "${dom_sub[@]}"; do
-        # Use 'dig' to fetch DNS information and 'grep' to filter the ANSWER SECTION
-        # 'tail -1' extracts the last line of the ANSWER SECTION, which contains the relevant information
-        rec=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
-        where_to=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+    for sub_domain in "${subdomains[@]}"; do
+        # Use 'dig' to fetch DNS information for the subdomain
+        # 'grep' filters the ANSWER SECTION, 'tail -1' extracts the last line with relevant info
+        record_type=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+        destination=$(dig $sub_domain.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
         
         # Display the information for each subdomain
-        echo "The subdomain $sub_domain is a $rec record and points to $where_to"
+        echo "The subdomain $sub_domain is a $record_type record and points to $destination"
     done
 elif [ "$#" = 2 ]; then
-    # Use 'dig' to fetch DNS information and 'grep' to filter the ANSWER SECTION
-    # 'tail -1' extracts the last line of the ANSWER SECTION, which contains the relevant information
-    rec=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
-    where_to=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+    # Use 'dig' to fetch DNS information for the specified subdomain
+    # 'grep' filters the ANSWER SECTION, 'tail -1' extracts the last line with relevant info
+    record_type=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+    destination=$(dig $2.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
     
     # Display the information for the specified subdomain
-    echo "The subdomain $2 is a $rec record and points to $where_to"
+    echo "The subdomain $2 is a $record_type record and points to $destination"
 fi
