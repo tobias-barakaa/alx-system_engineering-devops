@@ -8,9 +8,11 @@ runDig() {
     domain=$2
 
     # Use 'dig' to fetch DNS information for the specified subdomain
-    # 'grep' filters the ANSWER SECTION, 'tail -1' extracts the last line with relevant info
-    # 'awk' formats and prints the information, including the subdomain, record type, and destination
-    dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION:' | tail -1 | awk -v s="$subdomain" 'BEGIN { FS = " " } ; { print "The subdomain " s " is a " $4 " record and points to " $5 }'
+    # 'grep' filters the ANSWER SECTION, 'tail -1'
+    # 'awk' formats and prints the information,
+    dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION:' |
+    tail -1 | awk -v s="$subdomain" 'BEGIN { FS = " " } ;
+    { print "The subdomain " s " is a " $4 " record and points to " $5 }'
 }
 
 # Check the number of command-line arguments
