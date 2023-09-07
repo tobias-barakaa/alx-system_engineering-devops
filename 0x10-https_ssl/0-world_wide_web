@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Define a function to display DNS information for a subdomain
+display_dns_info() {
+    subdomain=$1
+    domain=$2
+
+    # Use dig to get DNS information for the subdomain
+    result=$(dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION:')
+
+    # Extract record type and destination IP from the result
+    record_type=$(echo "$result" | awk '/IN\s+[A-Z]+/{print $4}')
+    destination=$(echo "$result" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/{print $5}')
+
+    # Display the information
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+# Check if both domain and subdomain are provided as arguments
+if [ $# -eq 2 ]; then
+    subdomain="$2"
+    domain="$1"
+    display_dns_info "$subdomain" "$domain"
+else
+    # Display information for default subdomains
+    display_dns_info "www" "$1"
+    display_dns_info "lb-01" "$1"
+    display_dns_info "web-01" "$1"
+    display_dns_info "web-02" "$1"
+fi
