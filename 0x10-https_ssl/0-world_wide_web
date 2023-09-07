@@ -1,44 +1,27 @@
 #!/usr/bin/env bash
-# Configure my domain zone:
-# www --> 914-lb-01 3.83.192.251
-# web-01 --> 914-web-01 18.205.38.219
-# web-02 --> 914-web-02 34.138.16.188
+# This script displays information about subdomains.
 
-# -- To be evaluated --
-# domain_information () {
-#     line=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
-#     echo "$2 $line" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
-# }
+# Get the domain name and subdomain.
+domain="$1"
+subdomain="$2"
 
-# if [ "$#" == 1 ]
-# then
-#   domain_information "$1" "www"
-#   domain_information "$1" "lb-01"
-#   domain_information "$1" "web-01"
-#   domain_information "$1" "web-02"
-# elif [ "$#" == 2 ]
-# then
-#   domain_information "$1" "$2"
-# fi
-#-- To be evaluated --
-
-subdomains_all=( "www" "lb-01" "web-01" "web-02" )
-
-runDig () {
-    subdomain=$1
-    domain=$2
-
-    dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION:' | tail -1 | awk -v s="$subdomain" 'BEGIN { FS = " " } ; { print "The subdomain " s " is a " $4 " record and points to " $5 }'
-}
-
-if [ $# -eq 1 ]; then
-    domain="$1"
-    for i in "${subdomains_all[@]}"
-    do
-	runDig "$i" "$domain"
-    done
-elif [ $# -eq 2 ]; then
-    domain="$1"
-    subdomain="$2"
-    runDig "$subdomain" "$domain"
+# Check if the subdomain parameter is set.
+if [ -z "$subdomain" ]; then
+  # If not, print information for the subdomains www, lb-01, web-01, and web-02.
+  for subdomain in www lb-01 web-02; do
+    info_subdomain "$domain" "$subdomain"
+  done
+else
+  # If yes, print information for the specified subdomain.
+  info_subdomain "$domain" "$subdomain"
 fi
+
+# Function to print information about a subdomain.
+function info_subdomain() {
+  # Get the record type and destination of the subdomain.
+  record_type=$(dig "$domain.$subdomain" | awk -F' ' '{print $5}')
+  destination=$(dig "$domain.$subdomain" | awk -F' ' '{print $6}')
+
+  # Print the information.
+  echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
