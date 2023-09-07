@@ -1,29 +1,30 @@
 #!/usr/bin/env bash
-# Function to print information about a subdomain.
+
+# Function to display information about a subdomain.
 function info_subdomain() {
   local domain="$1"
   local subdomain="$2"
-  
-  # Get the record type and destination of the subdomain.
-  local record_type=$(dig "$subdomain.$domain" +short -t A)
-  local destination=$(dig "$subdomain.$domain" +short)
+  local query_result=$(dig "$subdomain.$domain" +short)
 
-  # Print the information.
-  echo "The subdomain $subdomain is a $record_type record and points to $destination"
+  if [ -z "$query_result" ]; then
+    echo "The subdomain $subdomain does not exist."
+  else
+    local record_type=$(dig "$subdomain.$domain" +short -t A | awk '{print $1}')
+    local destination=$(dig "$subdomain.$domain" +short)
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+  fi
 }
 
-# Get the domain name and subdomain from command-line arguments.
-domain="$1"
-subdomain="$2"
-
-# Check if the subdomain parameter is set.
-if [ -z "$subdomain" ]; then
-  # If not, print information for the default subdomains.
+# Check the number of command-line arguments.
+if [ "$#" -eq 1 ]; then
+  # If only the domain parameter is provided, display information for default subdomains.
   subdomains=("www" "lb-01" "web-01" "web-02")
   for sub in "${subdomains[@]}"; do
-    info_subdomain "$domain" "$sub"
+    info_subdomain "$1" "$sub"
   done
+elif [ "$#" -eq 2 ]; then
+  # If both domain and subdomain parameters are provided, display information for the specified subdomain.
+  info_subdomain "$1" "$2"
 else
-  # If yes, print information for the specified subdomain.
-  info_subdomain "$domain" "$subdomain"
+  echo "Usage: $0 <domain> [subdomain]"
 fi
