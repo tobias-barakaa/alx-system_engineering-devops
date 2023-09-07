@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Script that sets the port 80
-sed -i "s/listen 8080 default_server;/listen 80 default_server;/" /etc/nginx/sites-enabled/default
-sed -i "s/listen \[::\]:8080 default_server ipv6only=on;/listen \[::\]:80 default_server;/" /etc/nginx/sites-enabled/default
-sed -i "s/ ipv6only=on//" /etc/nginx/sites-available/default
-service nginx restart
+# a script to check if nginx is configured succesfully
+# Remove the symbolic link to the default website configuration
+sudo rm /etc/nginx/sites-enabled/default
+
+# Create a new symbolic link to the default website configuration
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Restart the Nginx web server
+sudo service nginx restart
