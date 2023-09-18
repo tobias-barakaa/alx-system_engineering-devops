@@ -1,0 +1,5 @@
+#!/bin/bash
+sed -i 's/user www-data;/user nginx;/' /etc/nginx/nginx.conf /etc/nginx/sites-available/default
+service nginx start
+sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
+service nginx reload
