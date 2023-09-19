@@ -35,11 +35,4 @@ MySQL has a large and active community of developers, DBAs, and users who contri
 MySQL competes with other RDBMSs like PostgreSQL, Microsoft SQL Server, and Oracle Database. The choice of which database to use depends on specific project requirements and preferences.
 
 11. Versioning:
-MySQL continues to evolve, with new features and improvements added in each release. As of my knowledge cutoff date in September 2021, MySQL 8.0 was the latest major version. Subsequent releases may have occurred since then.
-
-Please note that since my knowledge is based on information available up to September 2021, there may have been developments, updates, or changes in MySQL beyond that date. It's advisable to consult the official MySQL documentation or the MySQL community for the most up-to-date information and resources.
-
-
-
-
-
+MySQL continues to evolve, with new features and improvements added in each release. As of my knowledge cutoff date in September 2021, MySQL 8.0 was the latest major version. Subsequent releases may have occurred since the
