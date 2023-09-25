@@ -6,6 +6,7 @@ Python script that exports data in the JSON format.
 import json
 import requests
 
+
 def export_json():
     """Exports data in JSON format for all users.
 
@@ -23,6 +24,8 @@ def export_json():
 
     # Create a dictionary to store the TODO items for all users.
     user_todos = {}
+  
+
   for user in users:
     user_todos[user['id']] = []
 
