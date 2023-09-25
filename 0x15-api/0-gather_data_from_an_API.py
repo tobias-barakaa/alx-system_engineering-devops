@@ -1,4 +1,7 @@
 #!usr/bin/python3
+"""
+script to fetch to do list
+"""
 import requests
 import sys
 
