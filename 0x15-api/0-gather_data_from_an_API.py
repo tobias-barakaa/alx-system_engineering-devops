@@ -10,7 +10,7 @@ Usage:
     python3 gather_data_from_an_API.py <employee_id>
 
 Parameters:
-    - <employee_id>: An integer representing the employee's ID.
+    - <employee_id>: An integer representing the employee's
 
 Example:
     To check the TODO list progress for an employee with ID 2:
