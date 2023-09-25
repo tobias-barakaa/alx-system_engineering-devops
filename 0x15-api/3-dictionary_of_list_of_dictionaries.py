@@ -3,41 +3,43 @@
 """
 Python script that exports data in the JSON format.
 """
-
-import requests
 import json
+import requests
 
-def export_todo_list_to_json():
-    # Fetch TODO list data and user data
-    todos_response = requests.get('https://jsonplaceholder.typicode.com/todos/')
-    todos_data = todos_response.json()
+def export_json():
+  """Exports data in JSON format for all users.
 
-    users_response = requests.get('https://jsonplaceholder.typicode.com/users')
-    users_data = users_response.json()
+  Returns:
+    A dictionary containing the TODO items for all users.
+  """
 
-    # Create a dictionary to store user tasks
-    user_tasks = {}
+  # Get the TODO items for all users.
+  response = requests.get('https://jsonplaceholder.typicode.com/todos/')
+  todos = response.json()
 
-    for user in users_data:
-        user_id = user['id']
-        username = user['username']
+  # Get the users.
+  response = requests.get('https://jsonplaceholder.typicode.com/users/')
+  users = response.json()
 
-        # Filter tasks for this user
-        user_tasks[user_id] = []
+  # Create a dictionary to store the TODO items for all users.
+  user_todos = {}
+  for user in users:
+    user_todos[user['id']] = []
 
-        for task in todos_data:
-            if task['userId'] == user_id:
-                user_tasks[user_id].append({
-                    'username': username,
-                    'task': task['title'],
-                    'completed': task['completed']
-                })
+  # Add the TODO items to the dictionary for each user.
+  for todo in todos:
+    user_todos[todo['userId']].append({
+      'username': users[todo['userId'] - 1]['username'],
+      'task': todo['title'],
+      'completed': todo['completed']
+    })
 
-    # Write data to a JSON file
-    with open("todo_all_employees.json", "w") as json_file:
-        json.dump(user_tasks, json_file, indent=4)
+  return user_todos
 
-    print("Data exported to todo_all_employees.json")
+if __name__ == '__main__':
+  # Export the data in JSON format.
+  user_todos = export_json()
 
-if __name__ == "__main__":
-    export_todo_list_to_json()
+  # Write the JSON data to a file.
+  with open('todo_all_employees.json', 'w') as f:
+    json.dump(user_todos, f)
