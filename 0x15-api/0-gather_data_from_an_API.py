@@ -13,10 +13,10 @@ if __name__ == "__main__":
     
      res = get('https://jsonplaceholder.typicode.com/todos/').json()
      result = []
-     res1 = get('https://jsonplaceholder.typicode.com/users/').json()
+     res2 = get('https://jsonplaceholder.typicode.com/users/').json()
      end = 0
 
-     for x in res1:
+     for x in res2:
          if x.get('id') == int(argv[1]):
              user = x.get('name')
      for x in res:
@@ -26,8 +26,8 @@ if __name__ == "__main__":
             if i.get('completed'):
                 end += 1
                 result.append(i.get('title'))
-         print("Employee {} is done with tasks({}/{}):".format(user, end,
+     print("Employee {} is done with tasks({}/{}):".format(user, end,
                                                           result))
 
-    for list in result:
-        print("\t {}".format(list))
+     for list in result:
+         print("\t {}".format(list))
