@@ -8,30 +8,38 @@ returns information about his/her TODO list progress.
 from requests import get
 from sys import argv
 
-
-if __name__ == "__main__":
+def get_employee_todo_progress(employee_id):
     response = get('https://jsonplaceholder.typicode.com/todos/')
     data = response.json()
+
     completed = 0
     total = 0
     tasks = []
-    response2 = get('https://jsonplaceholder.typicode.com/users')
-    data2 = response2.json()
-
-    for i in data2:
-        if i.get('id') == int(argv[1]):
-            employee = i.get('name')
 
     for i in data:
-        if i.get('userId') == int(argv[1]):
+        if i.get('userId') == int(employee_id):
             total += 1
 
             if i.get('completed') is True:
                 completed += 1
                 tasks.append(i.get('title'))
 
-    print("Employee {} is done with tasks({}/{}):".format(employee, completed,
-                                                          total))
+    return {
+        "employee_name": employee_id,
+        "number_of_done_tasks": completed,
+        "total_number_of_tasks": total,
+        "task_titles": tasks
+    }
 
-    for i in tasks:
-        print("\t {}".format(i))
+if __name__ == "__main__":
+    employee_id = int(argv[1])
+    employee_todo_progress = get_employee_todo_progress(employee_id)
+
+    print("Employee {} is done with tasks({}/{}):".format(
+        employee_todo_progress["employee_name"],
+        employee_todo_progress["number_of_done_tasks"],
+        employee_todo_progress["total_number_of_tasks"]
+    ))
+
+    for task_title in employee_todo_progress["task_titles"]:
+        print("\t {}".format(task_title))
