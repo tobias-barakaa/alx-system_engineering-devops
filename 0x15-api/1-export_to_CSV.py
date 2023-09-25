@@ -4,9 +4,9 @@
 Python script that exports data in the CSV format
 """
 
+import csv
 import requests
 import sys
-import csv
 
 def export_todo_list_to_csv(employee_id):
     # API endpoints
