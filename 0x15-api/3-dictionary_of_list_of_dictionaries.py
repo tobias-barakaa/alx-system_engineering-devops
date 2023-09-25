@@ -40,6 +40,6 @@ if __name__ == '__main__':
   # Export the data in JSON format.
   user_todos = export_json()
 
-  # Write the JSON data to a file.
+  # Write the JSON data to a file
   with open('todo_all_employees.json', 'w') as f:
-    json.dump(user_todos, f)
+                        json.dump(user_todos, f)
