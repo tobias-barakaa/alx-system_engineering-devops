@@ -1,39 +1,43 @@
 #!/usr/bin/python3
 
 """
-Python script that, using a REST API, for a given employee ID,
-returns information about his/her TODO list progress.
+Python script that exports data in the CSV format
 """
 
 import requests
 import sys
+import csv
 
-def get_todo_list_progress(user_id):
+def export_todo_list_to_csv(employee_id):
     # API endpoints
-    todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={user_id}'
-    user_url = f'https://jsonplaceholder.typicode.com/users/{user_id}'
+    todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
+    user_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
 
     try:
         # Fetch user data
         user_response = requests.get(user_url)
         user_data = user_response.json()
 
-        if 'name' not in user_data:
-            print(f"Employee with ID {user_id} not found.")
+        if 'username' not in user_data:
+            print(f"Employee with ID {employee_id} not found.")
             return
 
-        user_name = user_data['name']
+        employee_username = user_data['username']
 
         # Fetch TODO list data for the user
         todos_response = requests.get(todos_url)
         todos_data = todos_response.json()
 
-        completed_tasks = [task for task in todos_data if task['completed']]
-        total_tasks = len(todos_data)
+        csv_filename = f'{employee_id}.csv'
 
-        print(f"Employee {user_name} is done with tasks({len(completed_tasks)}/{total_tasks}):")
-        for task in completed_tasks:
-            print(f"\t{task['title']}")
+        with open(csv_filename, 'w', newline='') as file:
+            csv_writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+
+            for task in todos_data:
+                if 'userId' in task:
+                    csv_writer.writerow([task['userId'], employee_username, task['completed'], task['title']])
+
+        print(f"Data exported to {csv_filename}")
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
@@ -45,4 +49,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     employee_id = int(sys.argv[1])
-    get_todo_list_progress(employee_id)
+    export_todo_list_to_csv(employee_id)
