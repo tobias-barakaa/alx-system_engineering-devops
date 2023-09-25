@@ -16,7 +16,7 @@ Example:
     To check the TODO list progress for an employee with ID 2:
     python3 gather_data_from_an_API.py 2
 
-The script uses the 'requests' library to make an HTTP GET request to the API
+The script uses the 'requests' library to make HTTP GET requests to the API
 and calculates the number of completed and total tasks. It then displays the
 employee's progress in the following format:
 
@@ -26,37 +26,28 @@ Employee EMPLOYEE_NAME is done with tasks(NUMBER_OF_DONE_TASKS/TOTAL_NUMBER_OF_T
 Author: [Your Name]
 """
 
-import requests
-import sys
+from requests import get
+from sys import argv
 
 def get_employee_todo_progress(employee_id):
-    try:
-        response_data = requests.get(f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}")
-        response_data.raise_for_status()
-        todo_data = response_data.json()
+    response_data = get("https://jsonplaceholder.typicode.com/todos")
+    user_data = get("https://jsonplaceholder.typicode.com/users").json()
+    res_data = response_data.json()
+    completed = 0
+    result = []
+    all = 0
+    if res_data is not False:
+        for i in res_data:
+            if i.get('userId') == int(argv[1]):
+                all += 1
+        for i in user_data:
+            if i.get('id') == int(argv[1]):
+                user = i.get('name')
+            elif i.get('completed') is not False:
+                user += 1
+                result.append(i.get('title'))
+    print("Employee {} is done with tasks({}/{}):".format(user, completed,
+                                                          all))
 
-        if not todo_data:
-            print(f"No TODO data found for employee with ID {employee_id}")
-            return
-
-        user_data = requests.get(f"https://jsonplaceholder.typicode.com/users/{employee_id}")
-        user_data.raise_for_status()
-        user_info = user_data.json()
-
-        completed_tasks = sum(1 for task in todo_data if task['completed'])
-        total_tasks = len(todo_data)
-
-        print(f"Employee {user_info['name']} is done with tasks({completed_tasks}/{total_tasks}):")
-        for task in todo_data:
-            if task['completed']:
-                print(f"\t{task['title']}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 gather_data_from_an_API.py <employee_id>")
-    else:
-        employee_id = int(sys.argv[1])
-        get_employee_todo_progress(employee_id)
+    for i in result:
+        print("\t {}".format(i))
