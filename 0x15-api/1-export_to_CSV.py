@@ -33,14 +33,13 @@ import csv
 from sys import argv
 
 if __name__ == "__main__":
-    # Parse the employee ID from command line arguments
     employee_id = int(argv[1])
 
     # Fetch employee data from the REST API
     employee_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
     employee_response = requests.get(employee_url)
     employee_data = employee_response.json()
-    employee_name = employee_data.get('name')
+    employee_name = employee_data.get('username')
 
     # Fetch TODO list data from the REST API
     todos_url = 'https://jsonplaceholder.typicode.com/todos'
