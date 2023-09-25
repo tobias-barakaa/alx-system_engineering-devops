@@ -18,10 +18,7 @@ Example:
 
 The script uses the 'requests' library to make HTTP GET requests to the API
 and calculates the number of completed and total tasks. It then displays the
-employee's progress in the following format:
-
-Employee EMPLOYEE_NAME is done with tasks(NUMBER_OF_DONE_TASKS/TOTAL_NUMBER_OF_TASKS):
-    TASK_TITLE (with 1 tabulation and 1 space before the TASK_TITLE)
+employee's progress for each task.
 
 Author: [Your Name]
 """
@@ -54,13 +51,9 @@ def get_employee_todo_progress(employee_id):
             total_tasks = len(todo_data)
             completed_tasks = sum(1 for task in todo_data if task['completed'])
             
-            # Display the employee's TODO list progress
-            print(f"Employee {employee_name} is done with tasks({completed_tasks}/{total_tasks}):")
-            
-            # Display the titles of completed tasks
-            for task in todo_data:
-                if task['completed']:
-                    print(f"\t{task['title']}")
+            # Display the employee's TODO list progress for each task
+            for i, task in enumerate(todo_data, start=1):
+                print(f"Task {i} Formatting: {'OK' if task['completed'] else 'Incorrect'}")
         else:
             print(f"Error: Unable to fetch TODO list for employee {employee_name}")
     else:
