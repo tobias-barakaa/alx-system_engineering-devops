@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 completed_task_titles.append(task['title'])
 
     # Display progress in the specified format
-    print("Employee {} is done with tasks({}/{}):".format(employee_name,
-                                         completed_tasks, total_tasks))
+    print("Employee {} is done with tasks({}/{}):".format(employee_name, completed_tasks,
+                                                          total_tasks))
     for title in completed_task_titles:
         print("\t {}".format(title))
