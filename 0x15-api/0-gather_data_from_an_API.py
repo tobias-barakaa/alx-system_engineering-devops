@@ -4,7 +4,8 @@ Script to Fetch Employee TODO List Progress
 
 This script accepts an employee ID as a parameter and retrieves information
 about the employee's TODO list progress from a REST API. It fetches data from
-the 'jsonplaceholder.typicode.com' API and displays the progress in a specific format.
+the 'jsonplaceholder.typicode.com' API and displays
+the progress in a specific format.
 
 Usage:
     python3 gather_data_from_an_API.py <employee_id>
@@ -20,7 +21,8 @@ The script uses the 'requests' library to make HTTP GET requests to the API
 and calculates the number of completed and total tasks. It then displays the
 employee's progress in the following format:
 
-Employee EMPLOYEE_NAME is done with tasks(NUMBER_OF_DONE_TASKS/TOTAL_NUMBER_OF_TASKS):
+Employee EMPLOYEE_NAME is done with tasks
+(NUMBER_OF_DONE_TASKS/TOTAL_NUMBER_OF_TASKS):
     TASK_TITLE (with 1 tabulation and 1 space before the TASK_TITLE)
 
 Author: [Your Name]
@@ -58,6 +60,7 @@ if __name__ == "__main__":
                 completed_task_titles.append(task['title'])
 
     # Display progress in the specified format
-    print("Employee {} is done with tasks({}/{}):".format(employee_name, completed_tasks, total_tasks))
+    print("Employee {} is done with tasks({}/{}):".format(employee_name,
+                                         completed_tasks, total_tasks))
     for title in completed_task_titles:
         print("\t {}".format(title))
