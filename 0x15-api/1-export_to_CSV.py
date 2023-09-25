@@ -1,35 +1,48 @@
 #!/usr/bin/python3
 
 """
-Python script that exports data in the CSV format
+Python script that, using a REST API, for a given employee ID,
+returns information about his/her TODO list progress.
 """
 
-from requests import get
-from sys import argv
-import csv
+import requests
+import sys
+
+def get_todo_list_progress(user_id):
+    # API endpoints
+    todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={user_id}'
+    user_url = f'https://jsonplaceholder.typicode.com/users/{user_id}'
+
+    try:
+        # Fetch user data
+        user_response = requests.get(user_url)
+        user_data = user_response.json()
+
+        if 'name' not in user_data:
+            print(f"Employee with ID {user_id} not found.")
+            return
+
+        user_name = user_data['name']
+
+        # Fetch TODO list data for the user
+        todos_response = requests.get(todos_url)
+        todos_data = todos_response.json()
+
+        completed_tasks = [task for task in todos_data if task['completed']]
+        total_tasks = len(todos_data)
+
+        print(f"Employee {user_name} is done with tasks({len(completed_tasks)}/{total_tasks}):")
+        for task in completed_tasks:
+            print(f"\t{task['title']}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        return
 
 if __name__ == "__main__":
-    response = get('https://jsonplaceholder.typicode.com/todos/')
-    data = response.json()
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <employee_id>")
+        sys.exit(1)
 
-    row = []
-    response2 = get('https://jsonplaceholder.typicode.com/users')
-    data2 = response2.json()
-
-    for i in data2:
-        if i['id'] == int(argv[1]):
-            employee = i['username']
-
-    with open(argv[1] + '.csv', 'w', newline='') as file:
-        writ = csv.writer(file, quoting=csv.QUOTE_ALL)
-
-        for i in data:
-
-            row = []
-            if i['userId'] == int(argv[1]):
-                row.append(i['userId'])
-                row.append(employee)
-                row.append(i['completed'])
-                row.append(i['title'])
-
-                writ.writerow(row)
+    employee_id = int(sys.argv[1])
+    get_todo_list_progress(employee_id)
