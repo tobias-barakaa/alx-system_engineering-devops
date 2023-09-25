@@ -40,6 +40,7 @@ def export_json():
 
     return user_todos
 
+
 if __name__ == '__main__':
     # Export the data in JSON format.
     user_todos = export_json()
