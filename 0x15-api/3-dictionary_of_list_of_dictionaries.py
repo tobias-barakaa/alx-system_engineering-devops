@@ -28,8 +28,8 @@ def export_json():
 for user in users:
     user_todos[user['id']] = []
 
-  # Add the TODO items to the dictionary for each user.
-  for todo in todos:
+    # Add the TODO items to the dictionary for each user.
+for todo in todos:
     user_todos[todo['userId']].append({
       'username': users[todo['userId'] - 1]['username'],
       'task': todo['title'],
