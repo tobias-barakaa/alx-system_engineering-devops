@@ -21,6 +21,7 @@ import csv
 import requests
 import sys
 
+
 def export_todo_list_to_csv(employee_id):
     """
     Export TODO List to CSV for a given employee.
@@ -32,7 +33,8 @@ def export_todo_list_to_csv(employee_id):
         None
     """
     # API endpoints
-    todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
+    empId = employee_id
+    todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={empId}'
     user_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
 
     try:
@@ -57,13 +59,15 @@ def export_todo_list_to_csv(employee_id):
 
             for task in todos_data:
                 if 'userId' in task:
-                    csv_writer.writerow([task['userId'], employee_username, task['completed'], task['title']])
+                    csv_writer.writerow([task['userId'], employee_username,
+                                         task['completed'], task['title']])
 
         print(f"Data exported to {csv_filename}")
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
