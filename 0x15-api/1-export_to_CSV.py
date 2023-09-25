@@ -1,7 +1,20 @@
 #!/usr/bin/python3
 
 """
-Python script that exports data in the CSV format
+CSV Data Exporter
+
+This Python script exports data in CSV format for a given employee
+ID using a REST API.
+
+Usage:
+    python script.py <employee_id>
+
+Dependencies:
+    - requests
+    - csv
+
+The script fetches the user's data and their TODO list from the API,
+and exports it to a CSV file.
 """
 
 import csv
@@ -9,6 +22,15 @@ import requests
 import sys
 
 def export_todo_list_to_csv(employee_id):
+    """
+    Export TODO List to CSV for a given employee.
+
+    Args:
+        employee_id (int): The employee's ID.
+
+    Returns:
+        None
+    """
     # API endpoints
     todos_url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
     user_url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
