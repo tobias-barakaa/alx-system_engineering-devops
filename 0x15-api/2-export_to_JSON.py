@@ -1,24 +1,30 @@
 #!/usr/bin/python3
 
 """
-Python script that exports data in the JSON format.
+Python script designed to export data in the JSON format
 """
 
 # Documentation:
-# This Python script is designed to fetch data from a public REST API and export it in JSON format.
-# It retrieves a list of tasks associated with a specific employee ID from the JSONPlaceholder API
-# and organizes the data into a JSON object. The JSON object is then written to a JSON file with
+# This Python script is designed to fetch data from a public
+# REST API and export it in JSON format.
+# It retrieves a list of tasks associated with a specific
+# employee ID from the JSONPlaceholder API
+# and organizes the data into a JSON object.
+# The JSON object is then written to a JSON file with
 # the filename being the employee's ID.
 
 # Usage:
-# To use this script, run it from the command line with an employee ID as an argument. For example:
+# To use this script, run it from the command line
+# with an employee ID as an argument. For example:
 #   python3 script.py 2
-# This will fetch the tasks associated with the employee ID 2 and export the data to a JSON file
+# This will fetch the tasks associated with the employee
+# ID 2 and export the data to a JSON file
 # named "2.json" in the current directory.
 
 # Requirements:
 # - Python 3
-# - The `requests` module for making HTTP requests. You can install it using pip:
+# - The `requests` module for making HTTP requests.
+# You can install it using pip:
 #   pip install requests
 
 import json
