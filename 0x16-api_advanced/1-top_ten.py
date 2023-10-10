@@ -5,6 +5,7 @@ import
 
 import requests
 
+
 def top_ten(subreddit):
     # URL for the Reddit API to get the hot posts
     url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
@@ -29,6 +30,7 @@ def top_ten(subreddit):
     else:
         # Invalid subreddit or other API error
         print(None)
+
 
 # Test the function
 if __name__ == '__main__':
