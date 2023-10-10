@@ -1,27 +1,29 @@
 #!/usr/bin/python3
-# import
-from requests import get
-from sys import argv
+""" Module - 0-gather_data_from_an_API"""
+
+import requests
 
 
-def recurse(subreddit, hotlist=[], after=None):
-    """subs"""
-    head = {'User-Agent': 'Dan Kazam'}
-    try:
+def recurse(subreddit, hot_list=[], after=None):
+    """function that queries the Reddit API and prints the titles of
+    the first 10 hot posts listed for a given subreddit."""
+
+    headers = {'User-Agent': 'DiegoOrejuela'}
+    params = {"limit": 100, 'after': after}
+    response = requests.get("https://www.reddit.com/r/{}/hot/.json".
+                            format(subreddit), headers=headers, params=params)
+    if response:
+        after = response.json().get("data").get("after")
         if after:
-            count = get('https://www.reddit.com/r/{}/hot.json?after={}'.format(
-                subreddit, after), headers=head).json().get('data')
+            recurse(subreddit, hot_list, after=after)
+            titles = response.json().get("data").get("children")
+            for title in titles:
+                hot_list.append(title.get("data").get("title"))
+            return(hot_list)
         else:
-            count = get('https://www.reddit.com/r/{}/hot.json'.format(
-                subreddit), headers=head).json().get('data')
-        hotlist += [dic.get('data').get('title')
-                    for dic in count.get('children')]
-        if count.get('after'):
-            return recurse(subreddit, hotlist, after=count.get('after'))
-        return hotlist
-    except:
-        return None
-
-
-if __name__ == "__main__":
-    recurse(argv[1])
+            titles = response.json().get("data").get("children")
+            for title in titles:
+                hot_list.append(title.get("data").get("title"))
+            return(hot_list)
+    else:
+        return(None)
