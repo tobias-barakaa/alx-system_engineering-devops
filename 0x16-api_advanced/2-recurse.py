@@ -1,44 +1,28 @@
 #!/usr/bin/python3
-"""import"""
+"""Import"""
 
 import requests
 
 
-def recurse(subreddit, limit=100):
-    """Queries the Reddit API and returns a list of the titles of the
-  hot posts listed for a given subreddit.
+def recurse(subreddit, hot_list=[], after=None):
+    """function that queries using recursion"""
 
-  Args:
-    subreddit: The name of the subreddit to get the hot posts for.
-    limit: The maximum number of hot posts to return.
-
-  Returns:
-    A list of the titles of the hot posts.
-  """
-
+    params = {"limit": 100, 'after': after}
     headers = {'User-Agent': 'DiegoOrejuela'}
-    params = {"limit": limit}
-    response = requests.get("https://www.reddit.com/r/{}/hot/.json".
+    result = requests.get("https://www.reddit.com/r/{}/hot/.json".
                             format(subreddit), headers=headers, params=params)
-    if response:
-        hot_list = []
-    for title in response.json().get("data").get("children"):
-        hot_list.append(title.get("data").get("title"))
-    return hot_list
+    if result:
+        after = result.json().get("data").get("after")
+        if after:
+            recurse(subreddit, hot_list, after=after)
+            titles = result.json().get("data").get("children")
+            for title in titles:
+                hot_list.append(title.get("data").get("title"))
+            return hot_list
+        else:
+            titles = result.json().get("data").get("children")
+            for title in titles:
+                hot_list.append(title.get("data").get("title"))
+            return hot_list
     else:
         return None
-
-
-def main():
-    subreddit = input("Enter the name of a subreddit: ")
-    hot_posts = recurse(subreddit)
-    if hot_posts:
-        print("The hot posts for the subreddit {} are:".format(subreddit))
-    for post in hot_posts:
-        print(post)
-    else:
-        print("No hot posts found for the subreddit {}".format(subreddit))
-
-
-if __name__ == '__main__':
-    main()
