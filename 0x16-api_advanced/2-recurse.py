@@ -4,48 +4,39 @@
 import
 """
 
+
 import requests
+import sys
 
-def recurse(subreddit, hot_list=[], after=None):
-    # Base case: if after is None, there are no more pages of results, return the hot_list
-    if after is None:
-        return hot_list
+def get_hot_posts(subreddit):
+  """Recursively gets the hot posts for a given subreddit.
 
-    # URL for the Reddit API to get the hot posts
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=100&after={after}"
+  Args:
+    subreddit: The name of the subreddit to get the hot posts for.
 
-    # Set a custom User-Agent to avoid any issues
-    headers = {'User-Agent': 'Custom User Agent'}
+  Returns:
+    A list of the titles of the hot posts.
+  """
 
-    # Make the API request
+  after = None
+  hotlist = []
+  while True:
+    headers = {'User-Agent': 'Dan Kazam'}
+    if after:
+      url = 'https://www.reddit.com/r/{}/hot.json?after={}'.format(
+          subreddit, after)
+    else:
+      url = 'https://www.reddit.com/r/{}/hot.json'.format(subreddit)
     response = requests.get(url, headers=headers)
+    data = response.json().get('data')
+    if not data:
+      break
+    hotlist += [dic.get('data').get('title') for dic in data.get('children')]
+    after = data.get('after')
+  return hotlist
 
-    # Check if the request was successful
-    if response.status_code == 200:
-        try:
-            # Parse the JSON response
-            data = response.json()
-            # Extract and append the titles of the hot posts to the hot_list
-            for post in data['data']['children']:
-                hot_list.append(post['data']['title'])
-            # Recursively call the function with the 'after' parameter for pagination
-            return recurse(subreddit, hot_list, data['data']['after'])
-        except KeyError:
-            # Invalid subreddit or unexpected JSON structure
-            return None
-    else:
-        # Invalid subreddit or other API error
-        return None
-
-# Test the function
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) < 2:
-        print("Please pass an argument for the subreddit to search.")
-    else:
-        subreddit = sys.argv[1]
-        result = recurse(subreddit)
-        if result is not None:
-            print(len(result))
-        else:
-            print("None")
+  subreddit = sys.argv[1]
+  hot_posts = get_hot_posts(subreddit)
+  for post in hot_posts:
+    print(post)
