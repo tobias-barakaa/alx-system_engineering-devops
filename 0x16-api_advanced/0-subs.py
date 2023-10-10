@@ -5,6 +5,7 @@ Import
 """
 import requests
 
+
 def number_of_subscribers(subreddit):
     # URL for the Reddit API
     url = f"https://www.reddit.com/r/{subreddit}/about.json"
@@ -30,6 +31,7 @@ def number_of_subscribers(subreddit):
         # Invalid subreddit or other API error
         return 0
 
+
 # Test the function
 if __name__ == '__main__':
     import sys
@@ -39,4 +41,3 @@ if __name__ == '__main__':
         subreddit = sys.argv[1]
         subscribers = number_of_subscribers(subreddit)
         print(subscribers)
-
