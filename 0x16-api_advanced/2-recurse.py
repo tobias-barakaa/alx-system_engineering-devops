@@ -3,7 +3,7 @@
 
 import requests
 
-def get_hot_posts(subreddit, limit=100):
+def recurse(subreddit, limit=100):
   """Queries the Reddit API and returns a list of the titles of the
   hot posts listed for a given subreddit.
 
@@ -29,7 +29,7 @@ def get_hot_posts(subreddit, limit=100):
 
 def main():
   subreddit = input("Enter the name of a subreddit: ")
-  hot_posts = get_hot_posts(subreddit)
+  hot_posts = recurse(subreddit)
   if hot_posts:
     print("The hot posts for the subreddit {} are:".format(subreddit))
     for post in hot_posts:
