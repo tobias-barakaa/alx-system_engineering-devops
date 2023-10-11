@@ -1,6 +1,12 @@
 # fixes`
 
-exec { 'fix-wordpress':
-  command => 'sed -i s/phpp/php/g /var/www/html/wp-settings.php',
-  path    => '/usr/local/bin/:/bin/'
+file { '/etc/apache2/sites-available/your_site.conf':
+  ensure => present,
+  source => 'puppet:///modules/your_module/your_site.conf',
+}
+
+service { 'apache2':
+  ensure  => running,
+  enable  => true,
+  require => File['/etc/apache2/sites-available/your_site.conf'],
 }
