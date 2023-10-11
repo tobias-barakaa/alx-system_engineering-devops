@@ -1,7 +1,8 @@
 # fixes`
 
-file { '/var/www/html/wp-settings.php':
-  ensure  => file,
-  replace => 'true',
-  content => file('path/to/your/wp-settings.php'), # Replace with the path to your original wp-settings.php
+# Fixes bad `phpp` extensions to `php`
+
+exec { 'fix-wordpress':
+  command => 'sed -i s/phpp/php/g /var/www/html/wp-settings.php',
+  path    => '/usr/local/bin/:/bin/'
 }
