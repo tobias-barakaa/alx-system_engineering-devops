@@ -1,45 +1,37 @@
-# Define a server block that listens on port 80 for both IPv4 and IPv6 traffic.
 server {
-    listen 80 default_server;                      # Listen on port 80 for IPv4 traffic.
-    listen [::]:80 ipv6only=on default_server;     # Listen on port 80 for IPv6 traffic.
-    server_name localhost;                        # Set the server name.
+	listen 80 default_server;
+	listen [::]:80 ipv6only=on default_server;
+	server_name localhost;
 
-    root /var/www/html;                          # Set the root directory for this server block.
+	root /var/www/html;
 
-    # Define a location block for serving static files from /data/web_static/current/ under /hbnb_static/.
-    location /hbnb_static/ {
-        alias /data/web_static/current/;         # Alias the path to the static files.
-        autoindex off;                           # Disable directory listing.
-    }
+	location /hbnb_static/ {
+		alias /data/web_static/current/;
+		autoindex off;
+	}
 
-    index index.html index.htm index.nginx-debian.html;  # Define the default index files.
+	index index.html index.htm index.nginx-debian.html;
+	rewrite ^/redirect_me https://github.com/besthor permanent;
 
-    # Create a rewrite rule to redirect the path /redirect_me to https://github.com/besthor permanently.
-    rewrite ^/redirect_me https://github.com/besthor permanent;
+	error_page 404 /404.html;
 
-    # Define a custom 404 error page.
-    error_page 404 /404.html;
+	location = /404.html {
+		root /usr/share/nginx/html;
+		internal;
+	}
 
-    # Define a location block for serving the custom 404 error page.
-    location = /404.html {
-        root /usr/share/nginx/html;  # Set the root directory for the 404 error page.
-        internal;                  # Make this location block internal.
-    }
+	location /airbnb-onepage/ {
+		include proxy_params;
+                proxy_pass http://0.0.0.0:5000/airbnb-onepage/;
+        }
 
-    # Define a location block for proxying requests to the /airbnb-onepage/ path to a backend server.
-    location /airbnb-onepage/ {
-        include proxy_params;                 # Include proxy parameters.
-        proxy_pass http://0.0.0.0:5000/airbnb-onepage/;  # Proxy requests to the specified backend server.
-    }
+	location /airbnb-dynamic/number_odd_or_even/ {
+		include proxy_params;
+		proxy_pass http://0.0.0.0:5001/number_odd_or_even/;
+	}
 
-    # Define a location block for proxying requests to the /airbnb-dynamic/number_odd_or_even/ path to a backend server.
-    location /airbnb-dynamic/number_odd_or_even/ {
-        include proxy_params;                           # Include proxy parameters.
-        proxy_pass http://0.0.0.0:5001/number_odd_or_even/;  # Proxy requests to the specified backend server.
-    }
+	location / {
+		try_files $uri $uri/ =404;
+	}
 
-    # Define a default location block to handle other requests by trying to serve the file or returning a 404 error.
-    location / {
-        try_files $uri $uri/ =404;  # Try to serve the file, and if it doesn't exist, return a 404 error.
-    }
 }
