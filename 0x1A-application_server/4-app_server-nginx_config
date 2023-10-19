@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name _;  # Listen on all available network interfaces.
+
+    location /api/ {
+        proxy_pass http://0.0.0.0:5002;  # Forward requests to Gunicorn on port 5002.
+    }
+}
+
